@@ -244,7 +244,7 @@
     <TargetName Condition="'$(Configuration)|$(Platform)'=='release_static_mt|Win32'">RSFoundationmt</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug_shared|Win32'">
-    <OutDir>..\bin\</OutDir>
+    <OutDir>.\bin\</OutDir>
     <IntDir>obj\rsyncAgent\$(Configuration)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <TargetExt>.exe</TargetExt>
@@ -294,10 +294,10 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>PocoFoundationd.lib;PocoJSONd.lib;PocoCryptod.lib;PocoNetd.lib;PocoUtild.lib;PocoDatad.lib;paho-mqtt3a.lib;paho-mqtt3as.lib;libcrypto.lib;libssl.lib;rsyncDatad.lib;FJCA_FUN_GT_API.lib;SoFProviderd.lib;Iphlpapi.lib;msi.lib;ws2_32.lib;comsuppw.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>..\bin\rsyncAgentd.exe</OutputFile>
+      <OutputFile>$(OutDir)$(TargetFileName)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>..\bin\rsyncAgentd.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)$(TargetFileName).pdb</ProgramDatabaseFile>
       <AdditionalLibraryDirectories>..\lib;..\lib\libpoco;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>Console</SubSystem>
       <ImportLibrary>
@@ -331,7 +331,7 @@ xcopy /y $(ProjectDir)Language.ini $(OutDir)</Command>
     </ClCompile>
     <Link>
       <AdditionalDependencies>PocoFoundation.lib;PocoJSON.lib;PocoUtil.lib;PocoNet.lib;PocoData.lib;PocoDataSQLite.lib;rsyncData.lib;PocoCrypto.lib;paho-mqtt3a.lib;paho-mqtt3as.lib;libcrypto.lib;libssl.lib;ws2_32.lib;iphlpapi.lib;SoFProvider.lib;FJCA_FUN_GT_API.lib;comsuppw.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>..\bin\rsyncAgent.exe</OutputFile>
+      <OutputFile>$(OutDir)$(TargetFileName)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\lib;..\lib\libpoco;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
