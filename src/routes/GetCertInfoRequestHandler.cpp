@@ -144,9 +144,14 @@ void GetCertInfo::personal()
 	if (_item.empty())extract(x509ptr->subjectName(), "title");
 }
 
+#include "Poco/HexBinaryEncoder.h"
+
 void GetCertInfo::subjectKeyId()
 {
-	_item = SOF_GetCertInfoByOid(_cer, "2.5.29.14");
+	std::ostringstream o;
+	Poco::HexBinaryEncoder hex(o);
+	hex << SOF_GetCertInfoByOid(_cer, "2.5.29.14");
+	_item = o.str();
 }
 
 void GetCertInfo::enterprise()
