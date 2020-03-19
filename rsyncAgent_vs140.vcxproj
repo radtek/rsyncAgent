@@ -251,7 +251,7 @@
     <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release_shared|Win32'">
-    <OutDir>..\bin\</OutDir>
+    <OutDir>.\bin\</OutDir>
     <IntDir>obj\rsyncAgent\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <TargetExt>.exe</TargetExt>
@@ -297,7 +297,7 @@
       <OutputFile>$(OutDir)$(TargetFileName)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(OutDir)$(TargetFileName).pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
       <AdditionalLibraryDirectories>..\lib;..\lib\libpoco;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>Console</SubSystem>
       <ImportLibrary>
@@ -305,7 +305,8 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y $(ProjectDir)rsyncAgent.properties $(OutDir)
+      <Command>xcopy /y $(ProjectDir)rsyncAgent_gtjd.properties $(OutDir)
+xcopy /y $(ProjectDir)rsyncAgent.properties $(OutDir)
 xcopy /y $(ProjectDir)Language.ini $(OutDir)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
