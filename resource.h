@@ -10,7 +10,7 @@
 #define MAIN				1 
 #define Major				9 
 #define Minor				1 
-#define FileIndex			5
+#define FileIndex			6
 
 #define VTSFILEVERSION			MAIN,Major,Minor,FileIndex
 #define VTSFILEVERSION_STR		STRINGIZE(MAIN) "." STRINGIZE(Major) "." STRINGIZE(Minor) "." STRINGIZE(FileIndex)

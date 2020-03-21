@@ -30,6 +30,20 @@ void ConfigParameters::run()
 	if (_cmd == "authCode") {
 		writeKCode();
 	}
+	else if (_cmd == "bussName") {
+		writeAuthCode(_cmd, _val);
+	}
+}
+
+#include "CloudAPI/CloudCommand.h"
+#include "CloudAPI/ConfigParamsByBussSysRequestHandler.h"
+
+void ConfigParameters::writeAuthCode(const std::string& cmd, const std::string& value)
+{
+	Application& app = Application::instance();
+	std::string url = app.config().getString("rsigncloud");
+	ConfigParamsByBussSys command(cmd, value, url);
+	command.run();
 }
 
 void ConfigParameters::writeKCode()

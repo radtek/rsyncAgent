@@ -15,6 +15,7 @@ namespace Reach {
 		ConfigParameters(const std::string& cmd, const std::string& val);
 		void run();
 	private:
+		void writeAuthCode(const std::string & cmd, const std::string & value);
 		void writeKCode();
 		void setWebAssist();
 	private:
