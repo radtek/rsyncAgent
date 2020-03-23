@@ -44,7 +44,7 @@ namespace Reach {
 		virtual void mixValue()
 		{
 			Application& app = Application::instance();
-			FileInputStream in(Utility::config("config\\CloudLogoutAuth.json"));
+			FileInputStream in(Utility::getCommand("CloudLogoutAuth"));
 			DynamicStruct ds = *parse(in).extract<Object::Ptr>();
 
 			ds["bodyJson"]["token"] = _token;

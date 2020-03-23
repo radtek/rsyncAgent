@@ -48,7 +48,7 @@ namespace Reach {
 		virtual void mixValue()
 		{
 			Application& app = Application::instance();
-			FileInputStream in(Utility::config("config\\CloudEncryptAuth.json"));
+			FileInputStream in(Utility::getCommand("CloudEncryptAuth"));
 			DynamicStruct ds = *parse(in).extract<Object::Ptr>();
 			ds["bodyJson"]["action"] = _action;
 			ds["bodyJson"]["transid"] = _transid;

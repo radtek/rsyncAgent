@@ -49,7 +49,7 @@ namespace Reach {
 		virtual void mixValue()
 		{
 			Application& app = Application::instance();
-			FileInputStream in(Utility::config("config\\CloudGetCertBase64.json"));
+			FileInputStream in(Utility::getCommand("CloudGetCertBase64"));
 			DynamicStruct ds = *parse(in).extract<Object::Ptr>();
 			ds["bodyJson"]["token"] = _token;
 			ds["bodyJson"]["transid"] = _transid;

@@ -34,6 +34,7 @@ namespace Reach {
 		static std::string GetCertInfoByOid(const std::string& cer, const std::string& oid);
 		static SessionContainer& getSC();
 		static Session getSession();
+		static std::string getCommand(const std::string & command);
 		static std::string config(const std::string& name);
 		static std::string timestamp();
 		static std::string UniqueTransOrder();

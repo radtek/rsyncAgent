@@ -33,7 +33,7 @@ void ConfigParamsByBussSys::run()
 void ConfigParamsByBussSys::mixValue()
 {
 	Application& app = Application::instance();
-	FileInputStream in(Utility::config("config\\CloudGetAuthCode.json"));
+	FileInputStream in(Utility::getCommand("CloudGetAuthCode"));
 	DynamicStruct ds = *parse(in).extract<Object::Ptr>();
 
 	ds["bodyJson"]["bussName"] = _val;

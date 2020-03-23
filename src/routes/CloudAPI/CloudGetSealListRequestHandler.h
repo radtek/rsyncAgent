@@ -61,7 +61,7 @@ namespace Reach {
 		virtual void mixValue()
 		{
 			Application& app = Application::instance();
-			FileInputStream in(Utility::config("config\\CloudGetSealList.json"));
+			FileInputStream in(Utility::getCommand("CloudGetSealList"));
 			DynamicStruct ds = *parse(in).extract<Object::Ptr>();
 			ds["bodyJson"]["action"] = _action;
 			ds["bodyJson"]["token"] = _token;

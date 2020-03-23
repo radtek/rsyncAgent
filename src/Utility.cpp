@@ -144,6 +144,14 @@ Session Utility::getSession()
 	return Utility::getSC().get(uri);
 }
 
+std::string Utility::getCommand(const std::string& command)
+{
+	Application& app = Application::instance();
+	std::string project = app.config().getString("config.project","rsigncloud");
+
+	return config("config\\" + project + "\\" + command + ".json");
+}
+
 std::string Utility::config(const std::string& name)
 {
 	Application& app = Application::instance();

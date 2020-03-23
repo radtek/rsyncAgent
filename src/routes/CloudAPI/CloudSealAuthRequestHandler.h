@@ -46,7 +46,7 @@ namespace Reach {
 		virtual void mixValue()
 		{
 			Application& app = Application::instance();
-			FileInputStream in(Utility::config("config\\CloudSealAuth.json"));
+			FileInputStream in(Utility::getCommand("CloudSealAuth"));
 			DynamicStruct ds = *parse(in).extract<Object::Ptr>();
 
 			bool authType = Poco::Dynamic::Var(app.config().getString("authType")).convert<bool>();

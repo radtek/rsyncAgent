@@ -93,7 +93,7 @@ namespace Reach {
 		virtual void mixValue()
 		{
 			Application& app = Application::instance();
-			FileInputStream in(Utility::config("config\\CloudEncryptData.json"));
+			FileInputStream in(Utility::getCommand("CloudEncryptData"));
 			DynamicStruct ds = *parse(in).extract<Object::Ptr>();
 			ds["bodyJson"]["token"] = _token;
 			ds["bodyJson"]["transid"] = _transid;

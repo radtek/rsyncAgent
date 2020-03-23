@@ -52,7 +52,7 @@ namespace Reach {
 				throw CloudCommandException(RAR_ERRORSTACKOVERFLOW);
 
 			Application& app = Application::instance();
-			FileInputStream in(Utility::config("config\\CloudSignByP7.json"));
+			FileInputStream in(Utility::getCommand("CloudSignByP7"));
 			DynamicStruct ds = *parse(in).extract<Object::Ptr>();
 			ds["bodyJson"]["token"] = _token;
 			ds["bodyJson"]["dealData"] = _dealData;
