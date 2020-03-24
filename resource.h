@@ -8,8 +8,8 @@
 #define STRINGIZE(s)        STRINGIZE2(s)
 
 #define MAIN				1 
-#define Major				9 
-#define Minor				1 
+#define Major				1 
+#define Minor				9 
 #define FileIndex			6
 
 #define VTSFILEVERSION			MAIN,Major,Minor,FileIndex
