@@ -334,7 +334,7 @@ xcopy /y $(ProjectDir)Language.ini $(OutDir)</Command>
       <AdditionalDependencies>PocoFoundation.lib;PocoJSON.lib;PocoUtil.lib;PocoNet.lib;PocoData.lib;PocoDataSQLite.lib;rsyncData.lib;PocoCrypto.lib;paho-mqtt3a.lib;paho-mqtt3as.lib;libcrypto.lib;libssl.lib;ws2_32.lib;iphlpapi.lib;SoFProvider.lib;FJCA_FUN_GT_API.lib;comsuppw.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetFileName)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>..\lib;..\lib\libpoco;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
