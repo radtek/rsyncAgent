@@ -347,6 +347,9 @@
     <ClInclude Include="src\routes\KeyGetDeviceInfoRequestHandler.h">
       <Filter>RequestHandler\Ukey\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\mqtt\WSQTTHandler.h">
+      <Filter>Core\mqtt</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\RequestHandlerFactory.cpp">
@@ -480,6 +483,9 @@
     </ClCompile>
     <ClCompile Include="src\routes\KeyGetDeviceInfoRequestHandler.cpp">
       <Filter>RequestHandler\Ukey\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mqtt\WSQTTHandler.cpp">
+      <Filter>Core\mqtt</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

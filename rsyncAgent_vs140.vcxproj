@@ -59,6 +59,7 @@
     <ClInclude Include="src\mqtt\MQTTAsyncChannel.h" />
     <ClInclude Include="src\mqtt\MQTTAsyncClient.h" />
     <ClInclude Include="src\mqtt\MQTTNotification.h" />
+    <ClInclude Include="src\mqtt\WSQTTHandler.h" />
     <ClInclude Include="src\qrcode\BitBuffer.hpp" />
     <ClInclude Include="src\qrcode\QrCode.hpp" />
     <ClInclude Include="src\qrcode\QrSegment.hpp" />
@@ -133,6 +134,7 @@
     <ClCompile Include="src\mqtt\MQTTAsyncChannel.cpp" />
     <ClCompile Include="src\mqtt\MQTTAsyncClient.cpp" />
     <ClCompile Include="src\mqtt\MQTTNotification.cpp" />
+    <ClCompile Include="src\mqtt\WSQTTHandler.cpp" />
     <ClCompile Include="src\qrcode\BitBuffer.cpp" />
     <ClCompile Include="src\qrcode\QrCode.cpp" />
     <ClCompile Include="src\qrcode\QrSegment.cpp" />
