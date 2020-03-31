@@ -20,20 +20,19 @@
 #include "Poco/Net/ServerSocket.h"
 #include "Poco/Net/HTTPServer.h"
 #include "Poco/Net/HTTPServerParams.h"
+#include "Poco/URI.h"
+#include "mqtt/WSQTTHandler.h"
+#include "Poco/Thread.h"
+#include "Poco/Net/SocketReactor.h"
+
 #include "RequestHandlerFactory.h"
 #include <sstream>
 
 using namespace Reach;
 
-using Poco::Util::Application;
-using Poco::Util::Option;
-using Poco::Util::OptionSet;
-using Poco::Util::OptionCallback;
-using Poco::Util::HelpFormatter;
-using Poco::Net::ServerSocket;
-using Poco::Net::HTTPServer;
-using Poco::Net::HTTPServerParams;
-using Poco::TaskManager;
+using namespace Poco;
+using namespace Poco::Net;
+using namespace Poco::Util;
 
 rsyncAgent::rsyncAgent() : _helpRequested(false)
 {
@@ -85,17 +84,36 @@ void rsyncAgent::displayHelp()
 
 int rsyncAgent::main(const ArgVec& args)
 {
+	Application& app = Application::instance();
+
 	if (!_helpRequested)
 	{
 		TaskManager tm;
-		tm.start(new CloudEventRecevier);
 		tm.start(new AdaptiveRecevier);
 		unsigned short port = (unsigned short)config().getInt("HTTPFormServer.port", 9980);
 		ServerSocket svs(port);
 		HTTPServer srv(new RequestHandlerFactory, svs, new HTTPServerParams);
 		srv.start();
 		poco_information_f1(Application::instance().logger(), "HTTPServer Listen from %s", svs.address().toString());
-		waitForTerminationRequest();
+		
+		if ("websocket" == app.config().getString("config.etype", "mqtt"))
+		{
+			Poco::URI wss(app.config().getString("config.etype.url", ""));
+			SocketAddress sa(wss.getHost(), wss.getPort());
+			SocketReactor reactor;
+			SocketConnector<WSQTTHandler> connector(sa, reactor);
+
+			Thread thread;
+			thread.start(reactor);
+
+			waitForTerminationRequest();
+		}
+		else
+		{
+			tm.start(new CloudEventRecevier);
+			waitForTerminationRequest();
+		}
+
 		srv.stop();
 		tm.cancelAll();
 		tm.joinAll();
