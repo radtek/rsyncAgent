@@ -105,8 +105,9 @@ int rsyncAgent::main(const ArgVec& args)
 
 			Thread thread;
 			thread.start(reactor);
-
 			waitForTerminationRequest();
+			reactor.stop();
+			thread.join();
 		}
 		else
 		{
