@@ -21,15 +21,15 @@ namespace Reach {
 //	LoggingRegistry& reg = LoggingRegistry::defaultRegistry();
 //	pMQTTAsyncChannel = dynamic_cast<MQTTAsyncChannel*>(reg.channelForName("MQTTAsyncChannel"));
 
-#define MQTTAsyncChannelinitializer \
-	AutoPtr<MQTTAsyncChannel> pMQTTAsyncChannel; \
-	do{	LoggingFactory& fact = LoggingFactory::defaultFactory();\
-	pMQTTAsyncChannel = dynamic_cast<MQTTAsyncChannel*>(fact.createChannel("MQTTAsyncChannel"));}while(0)
-
-#define CustomChannelinitializer \
-	AutoPtr<CustomChannel> pCustomChannel;	\
-	do{ LoggingFactory& fact = LoggingFactory::defaultFactory();\
-	pCustomChannel = dynamic_cast<CustomChannel*>(fact.createChannel("CustomChannel"));}while(0)
+//#define MQTTAsyncChannelinitializer \
+//	AutoPtr<MQTTAsyncChannel> pMQTTAsyncChannel; \
+//	do{	LoggingFactory& fact = LoggingFactory::defaultFactory();\
+//	pMQTTAsyncChannel = dynamic_cast<MQTTAsyncChannel*>(fact.createChannel("MQTTAsyncChannel"));}while(0)
+//
+//#define CustomChannelinitializer \
+//	AutoPtr<CustomChannel> pCustomChannel;	\
+//	do{ LoggingFactory& fact = LoggingFactory::defaultFactory();\
+//	pCustomChannel = dynamic_cast<CustomChannel*>(fact.createChannel("CustomChannel"));}while(0)
 
 	class MQTTAsyncClient
 	{

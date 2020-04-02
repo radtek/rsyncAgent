@@ -1,26 +1,14 @@
 #include "MQTTAsyncClient.h"
 #include <openssl/hmac.h>
 #include <openssl/bio.h>
-#include "Poco/JSON/Parser.h"
-#include "Poco/JSON/Object.h"
-#include "Poco/Dynamic/Var.h"
-#include "Poco/DynamicStruct.h"
 #include "Poco/Format.h"
 #include "Poco/Util/Application.h"
-#include "Poco/NotificationCenter.h"
-#include "MQTTNotification.h"
-#include "Poco/Debugger.h"
-#include <cassert>
 #include "Poco/UUIDGenerator.h"
 #include "Poco/Net/HTMLForm.h"
 #include "../TokenManager.h"
 #include "../Utility.h"
-#include "Poco/LoggingFactory.h"
-#include "Poco/LoggingRegistry.h"
-#include "Poco/AutoPtr.h"
-#include "Poco/SplitterChannel.h"
-#include "MQTTAsyncChannel.h"
-#include "../CustomChannel.h"
+#include "Poco/NotificationQueue.h"
+#include "NoteNotification.h"
 
 using namespace Reach;
 using namespace Poco;
@@ -44,7 +32,6 @@ MQTTAsyncClient::MQTTAsyncClient(bool useSSL)
 	clientIdUrl = Poco::format("%s@@@%s", groupId, deviceId);
 	
 	Application::instance().config().setString("clientId", deviceId);
-	//setConfigParameters();
 	int rc = 0;
 	if (rc = MQTTAsync_createWithOptions(&client, serverURI.data(),
 		clientIdUrl.data(),
@@ -73,20 +60,6 @@ void MQTTAsyncClient::initialize()
 {
 	createOpts();
 	connectOpts();
-
-	LoggingFactory& fact = LoggingFactory::defaultFactory();
-	fact.registerChannelClass("CustomChannel", new Instantiator<CustomChannel, Channel>);
-	fact.registerChannelClass("MQTTAsyncChannel", new Instantiator<MQTTAsyncChannel, Channel>);
-
-	CustomChannelinitializer;
-	MQTTAsyncChannelinitializer;
-
-	assert(pMQTTAsyncChannel.get() != 0 && pCustomChannel.get() != 0);
-	pMQTTAsyncChannel->setChannel(pCustomChannel);
-
-	LoggingRegistry& reg = LoggingRegistry::defaultRegistry();
-	reg.registerChannel("CustomChannel", pCustomChannel);
-	reg.registerChannel("MQTTAsyncChannel", pMQTTAsyncChannel);
 }
 
 void MQTTAsyncClient::createOpts()
@@ -109,8 +82,6 @@ void MQTTAsyncClient::connectOpts()
 	conn_opts.MQTTVersion = MQTTVERSION_3_1_1;
 	//conn_opts.keepAliveInterval = keepAliveInterval;
 	conn_opts.cleansession = true;
-	/*conn_opts.username = user;
-	conn_opts.password = password;*/
 	conn_opts.onSuccess = &MQTTAsyncClient::onSuccess;
 	conn_opts.onFailure = &MQTTAsyncClient::onFailure;
 	conn_opts.context = &client;
@@ -144,15 +115,7 @@ int MQTTAsyncClient::messageArrived(void* context, char* topicName, int topicLen
 		TokenManager::default().add(ds["data"]["transid"], ds["data"]);
 	}
 	/// Notify observers by Notification Queue
-	/// log(msg)
-	LoggingRegistry& reg = LoggingRegistry::defaultRegistry();
-	MQTTAsyncChannel* pMQTTAsyncChannel = dynamic_cast<MQTTAsyncChannel*>(reg.channelForName("MQTTAsyncChannel"));
-	assert(pMQTTAsyncChannel != 0);
-	/*MQTTAsyncChannelinitializer;
-	assert(pMQTTAsyncChannel.get() != 0);*/
-	Message Msg("MQTTAsyncClient", message, Message::PRIO_INFORMATION);
-	pMQTTAsyncChannel->log(Msg);
-
+	NotificationQueue::defaultQueue().enqueueNotification(new NoteNotification(message));
 	MQTTAsync_freeMessage(&msg);
 	MQTTAsync_free(topicName);
 	return 1;
@@ -161,26 +124,12 @@ int MQTTAsyncClient::messageArrived(void* context, char* topicName, int topicLen
 void MQTTAsyncClient::connectionLost(void* context, char* cause)
 {
 	connected = false;
-
-	LoggingRegistry& reg = LoggingRegistry::defaultRegistry();
-	MQTTAsyncChannel* pMQTTAsyncChannel = dynamic_cast<MQTTAsyncChannel*>(reg.channelForName("MQTTAsyncChannel"));
-	assert(pMQTTAsyncChannel != 0);
-
-	pMQTTAsyncChannel->close();
-
 	poco_information(Application::instance().logger(),"connect lost \n");
 }
 
 void MQTTAsyncClient::onSuccess(void* context, successData* response)
 {
 	connected = true;
-
-	LoggingRegistry& reg = LoggingRegistry::defaultRegistry();
-	MQTTAsyncChannel* pMQTTAsyncChannel = dynamic_cast<MQTTAsyncChannel*>(reg.channelForName("MQTTAsyncChannel"));
-	assert(pMQTTAsyncChannel != 0);
-
-	pMQTTAsyncChannel->open();
-
 	poco_information(Application::instance().logger(),"connect success \n");
 }
 
@@ -233,12 +182,6 @@ void MQTTAsyncClient::disconnect()
 	if ((rc = MQTTAsync_disconnect(client, &disc_opts)) != MQTTASYNC_SUCCESS) {
 		poco_information(Application::instance().logger(),format("MQTT Failed to disconnect, return code %d\n", rc));
 	}
-
-	LoggingRegistry& reg = LoggingRegistry::defaultRegistry();
-	MQTTAsyncChannel* pMQTTAsyncChannel = dynamic_cast<MQTTAsyncChannel*>(reg.channelForName("MQTTAsyncChannel"));
-	assert(pMQTTAsyncChannel != 0);
-
-	pMQTTAsyncChannel->close();
 }
 
 std::string MQTTAsyncClient::generatorPassword(const std::string& secretKey)
