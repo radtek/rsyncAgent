@@ -74,7 +74,7 @@ namespace Reach {
 		void handleRequest(HTTPServerRequest& request, HTTPServerResponse& respone) {
 
 			Application& app = Application::instance();
-			poco_information_f1(Application::instance().logger(), "Request from %s", request.clientAddress().toString());
+			poco_debug_f1(Application::instance().logger(), "Request from %s", request.clientAddress().toString());
 			RESTfulRequestHandler::handleCORS(request, respone);
 
 			HTMLForm form(request, request.stream());

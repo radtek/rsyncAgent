@@ -33,7 +33,7 @@ void CloudCommand::sendRequest()
 	assert(_out.type() == typeid(Object::Ptr));
 
 
-	poco_information_f1(app.logger(), "receiveResponse:\n%s", message);
+	poco_debug_f1(app.logger(), "receiveResponse:\n%s", message);
 }
 
 bool CloudCommand::success()

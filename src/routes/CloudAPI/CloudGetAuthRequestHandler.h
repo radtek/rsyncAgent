@@ -50,7 +50,7 @@ namespace Reach {
 			std::string cache = TokenManager::default().get(_transid);
 			if (!cache.empty()) 
 			{
-				poco_information(app.logger(), cache);
+				poco_debug(app.logger(), cache);
 				JSON_PARSE(cache);
 
 				_authResult = ds["authResult"].toString();
@@ -83,7 +83,7 @@ namespace Reach {
 		void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response)
 		{
 			Application& app = Application::instance();
-			poco_information_f1(app.logger(), "Request from %s", request.clientAddress().toString());
+			poco_debug_f1(app.logger(), "Request from %s", request.clientAddress().toString());
 
 			RESTfulRequestHandler::handleCORS(request, response);
 

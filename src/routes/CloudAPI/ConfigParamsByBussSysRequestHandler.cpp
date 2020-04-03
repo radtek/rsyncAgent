@@ -41,5 +41,5 @@ void ConfigParamsByBussSys::mixValue()
 	ds.erase("bodyJson");
 
 	prepare(ds.toString());
-	poco_information_f1(app.logger(), "CloudLogoutAuth mixValue:\n%s", ds.toString());
+	poco_debug_f1(app.logger(), "CloudLogoutAuth mixValue:\n%s", ds.toString());
 }

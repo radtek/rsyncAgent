@@ -57,7 +57,7 @@ namespace Reach {
 			ds.erase("bodyJson");
 
 			prepare(ds.toString());
-			poco_information_f1(app.logger(), "CloudLoginAuth mixValue:\n%s", ds.toString());
+			poco_debug_f1(app.logger(), "CloudLoginAuth mixValue:\n%s", ds.toString());
 		}
 
 	private:
@@ -71,7 +71,7 @@ namespace Reach {
 		void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response)
 		{
 			Application& app = Application::instance();
-			poco_information_f1(app.logger(), "Request from %s", request.clientAddress().toString());
+			poco_debug_f1(app.logger(), "Request from %s", request.clientAddress().toString());
 			RESTfulRequestHandler::handleCORS(request, response);
 
 			HTMLForm form(request, request.stream());
