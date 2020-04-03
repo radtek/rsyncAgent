@@ -46,7 +46,7 @@ namespace Reach {
 			Application& app = Application::instance();
 
 			URI uri(app.config().getString("signAndVerify"));
-			poco_information_f2(app.logger(), "VerifySignByP7Ext, URI : %s , uri.Path : %s", uri.toString(), uri.getPath());
+			poco_debug_f2(app.logger(), "VerifySignByP7Ext, URI : %s , uri.Path : %s", uri.toString(), uri.getPath());
 
 			HTTPResponse response;
 			HTTPRequest request(HTTPRequest::HTTP_POST, uri.getPath());
@@ -89,7 +89,7 @@ namespace Reach {
 			format(_buffer, fmt, bizCode,_msg, _signature, Utility::timestamp(), Utility::UniqueTransOrder());
 
 			assert(Utility::testJSON(_buffer));
-			poco_information_f1(Application::instance().logger(), "VerifySignByP7Ext JSON: %s", _buffer);
+			poco_debug_f1(Application::instance().logger(), "VerifySignByP7Ext JSON: %s", _buffer);
 		}
 
 	private:
@@ -105,7 +105,7 @@ namespace Reach {
 	public:
 		void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response)
 		{
-			poco_information_f1(Application::instance().logger(), "Request from %s", request.clientAddress().toString());
+			poco_debug_f1(Application::instance().logger(), "Request from %s", request.clientAddress().toString());
 
 			RESTfulRequestHandler::handleCORS(request, response);
 

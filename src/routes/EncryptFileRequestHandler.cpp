@@ -51,7 +51,7 @@ void EncryptFile::generateKey()
 
 	_symKey = keyStream.str();
 
-	poco_information_f1(app.logger(), "EncryptFile CipherKey::ByteVec:\n%s", _symKey);
+	poco_debug_f1(app.logger(), "EncryptFile CipherKey::ByteVec:\n%s", _symKey);
 }
 
 void EncryptFile::run()

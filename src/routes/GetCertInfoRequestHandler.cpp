@@ -135,7 +135,7 @@ void GetCertInfo::keysn()
 	if (FJCA_GetCertOID(const_cast<char*>(_cer.c_str()), num, 40))
 		_item = num;
 	
-	poco_information_f1(app.logger(), "%s", _item);
+	poco_debug_f1(app.logger(), "%s", _item);
 }
 
 void GetCertInfo::personal()
@@ -224,7 +224,7 @@ void GetCertInfo::decode_utf8(const std::string& text)
 	}
 	catch (Poco::RegularExpressionException& e)
 	{
-		poco_information_f1(app.logger(), "%s", e.message());
+		poco_debug_f1(app.logger(), "%s", e.message());
 	}
 }
 /*

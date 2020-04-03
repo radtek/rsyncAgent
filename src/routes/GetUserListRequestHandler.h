@@ -32,7 +32,7 @@ namespace Reach {
 	public:
 		void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response)
 		{
-			poco_information_f1(Application::instance().logger(), "Request from %s", request.clientAddress().toString());
+			poco_debug_f1(Application::instance().logger(), "Request from %s", request.clientAddress().toString());
 
 			RESTfulRequestHandler::handleCORS(request, response);
 

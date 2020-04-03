@@ -50,7 +50,7 @@ void DecryptFile::generateKey()
 	CipherFactory& factory = CipherFactory::defaultFactory();
 	_pCipher = factory.createCipher(ckey);
 
-	poco_information_f1(app.logger(), "EncryptFile CipherKey::ByteVec:\n%s", _kv);
+	poco_debug_f1(app.logger(), "EncryptFile CipherKey::ByteVec:\n%s", _kv);
 }
 
 void DecryptFile::run()
@@ -61,7 +61,7 @@ void DecryptFile::run()
 	Poco::StreamCopier::copyStream(_sink, decryptorStream);
 	decryptorStream.close();
 
-	poco_information_f1(app.logger(), "EncryptFile CipherKey::ByteVec:\n%s", _kv);
+	poco_debug_f1(app.logger(), "EncryptFile CipherKey::ByteVec:\n%s", _kv);
 }
 
 #include "Poco/File.h"

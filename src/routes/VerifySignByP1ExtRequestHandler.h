@@ -39,7 +39,7 @@ namespace Reach {
 			Application& app = Application::instance();
 
 			URI uri(app.config().getString("signAndVerify"));
-			poco_information_f2(app.logger(), "VerifySignByP1Ext, URI : %s , uri.Path : %s", uri.toString(), uri.getPath());
+			poco_debug_f2(app.logger(), "VerifySignByP1Ext, URI : %s , uri.Path : %s", uri.toString(), uri.getPath());
 
 			HTTPResponse response;
 			HTTPRequest request(HTTPRequest::HTTP_POST, uri.getPath());
@@ -80,11 +80,11 @@ namespace Reach {
 			
 			decideAlgorithm(_cert);
 
-			poco_information_f1(Application::instance().logger(), "VerifySignByP1Ext signatureAlgorithm: %s", _algorithm);
+			poco_debug_f1(Application::instance().logger(), "VerifySignByP1Ext signatureAlgorithm: %s", _algorithm);
 			format(_buffer, fmt, _msg, _signature, _cert, _algorithm,Utility::timestamp(), Utility::UniqueTransOrder());
 
 			assert(Utility::testJSON(_buffer));
-			poco_information_f1(Application::instance().logger(), "VerifySignByP1Ext JSON: %s", _buffer);
+			poco_debug_f1(Application::instance().logger(), "VerifySignByP1Ext JSON: %s", _buffer);
 		}
 	protected:
 		void decideAlgorithm(const std::string& cert)
@@ -121,7 +121,7 @@ namespace Reach {
 	public:
 		void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response)
 		{
-			poco_information_f1(Application::instance().logger(), "Request from %s", request.clientAddress().toString());
+			poco_debug_f1(Application::instance().logger(), "Request from %s", request.clientAddress().toString());
 
 			RESTfulRequestHandler::handleCORS(request, response);
 
