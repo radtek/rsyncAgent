@@ -19,11 +19,8 @@ WSQTTServiceHandler::WSQTTServiceHandler(StreamSocket& socket, SocketReactor& re
 	poco_debug_f1(app.logger(), "KeepAliveStatus:%b", _socket.getKeepAlive());
 	poco_debug_f1(app.logger(), "peerAddress:%s", _socket.peerAddress().toString());
 
-	_reactor.setTimeout(Timespan(0,0,10,0,0));
-
 	_reactor.addEventHandler(_socket, Observer<WSQTTServiceHandler, ReadableNotification>(*this, &WSQTTServiceHandler::onReadable));
 	_reactor.addEventHandler(_socket, Observer<WSQTTServiceHandler, WritableNotification>(*this, &WSQTTServiceHandler::onWritable));
-	_reactor.addEventHandler(_socket, Observer<WSQTTServiceHandler, TimeoutNotification>(*this, &WSQTTServiceHandler::onTimeout));
 	_reactor.addEventHandler(_socket, Observer<WSQTTServiceHandler, ShutdownNotification>(*this, &WSQTTServiceHandler::onShutdown));
 }
 
@@ -33,7 +30,6 @@ WSQTTServiceHandler::~WSQTTServiceHandler()
 
 	_reactor.removeEventHandler(_socket, Observer<WSQTTServiceHandler, ReadableNotification>(*this, &WSQTTServiceHandler::onReadable));
 	_reactor.removeEventHandler(_socket, Observer<WSQTTServiceHandler, WritableNotification>(*this, &WSQTTServiceHandler::onWritable));
-	_reactor.removeEventHandler(_socket, Observer<WSQTTServiceHandler, TimeoutNotification>(*this, &WSQTTServiceHandler::onTimeout));
 	_reactor.removeEventHandler(_socket, Observer<WSQTTServiceHandler, ShutdownNotification>(*this, &WSQTTServiceHandler::onShutdown));
 	poco_debug_f1(app.logger(), "peerAddress:%s", _socket.peerAddress().toString());
 	poco_debug_f1(app.logger(), "WebSocket connection closed. reactor thread %lu", Thread::currentTid());
@@ -81,14 +77,6 @@ void WSQTTServiceHandler::onWritable(WritableNotification* pNf)
 			poco_debug_f3(app.logger(),"send %s : %d, %s", n, _socket.peerAddress().toString(), msg);
 		}
 	}
-}
-
-void WSQTTServiceHandler::onTimeout(TimeoutNotification* pNf)
-{
-	pNf->release();
-
-	Application& app = Application::instance();
-	poco_debug_f1(app.logger(), "%s : timeout", _socket.peerAddress().toString());
 }
 
 void WSQTTServiceHandler::onShutdown(ShutdownNotification* pNf)
