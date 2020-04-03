@@ -251,7 +251,7 @@ std::string Utility::sendRequest(const std::string& url, const std::string& data
 	request.setContentType("application/json");
 	HTTPClientSession session(uri.getHost(), uri.getPort());
 	session.sendRequest(request) << data;
-	poco_information_f3(app.logger(), "session : %s:%hu %s", uri.getHost(), uri.getPort(), uri.getPath());
+	poco_debug_f3(app.logger(), "session : %s:%hu %s", uri.getHost(), uri.getPort(), uri.getPath());
 
 	HTTPResponse response;
 	std::istream& out = session.receiveResponse(response);
@@ -271,7 +271,7 @@ std::string Utility::v_encrypt_by_sm2(const std::string& plaintext, const std::s
 	int c = decoder.get();
 	while (c != -1) { skey += char(c); c = decoder.get(); }
 
-	poco_information_f1(app.logger(), "%s", skey);
+	poco_debug_f1(app.logger(), "%s", skey);
 
 	unsigned char c1[65], c3[32] = { 0 };
 	unsigned char *c2 = nullptr;
@@ -290,7 +290,7 @@ std::string Utility::v_encrypt_by_sm2(const std::string& plaintext, const std::s
 	encoder.write((const char*)c3, sizeof(c3));
 	encoder.write((const char*)c2, length);
 
-	poco_information_f1(app.logger(), "%s", ostr.str());
+	poco_debug_f1(app.logger(), "%s", ostr.str());
 	std::string ciphertext = Poco::toUpper(ostr.str());
 	return ciphertext;
 }

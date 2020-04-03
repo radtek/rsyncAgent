@@ -21,7 +21,7 @@ CustomChannel::~CustomChannel()
 void CustomChannel::addSocket(const Socket& ws, int flag)
 {
 	Application& app = Application::instance();
-	poco_information_f3(app.logger(),"CustomChannel::addSocket socket:%s , peer:%s , _waitList :%u",
+	poco_debug_f3(app.logger(),"CustomChannel::addSocket socket:%s , peer:%s , _waitList :%u",
 		ws.address().toString(), ws.peerAddress().toString(), _waitList.size());
 
 	FastMutex::ScopedLock lock(_socketMutex);
@@ -39,7 +39,7 @@ void CustomChannel::addSocket(const Socket& ws, int flag)
 void CustomChannel::removeSocket(const Socket& ws)
 {
 	Application& app = Application::instance();
-	poco_information_f3(app.logger(), "CustomChannel::addSocket socket:%s , peer:%s, _waitList :%u",
+	poco_debug_f3(app.logger(), "CustomChannel::addSocket socket:%s , peer:%s, _waitList :%u",
 		ws.address().toString(), ws.peerAddress().toString(), _waitList.size());
 
 	FastMutex::ScopedLock lock(_socketMutex);
@@ -73,7 +73,7 @@ CustomChannel::SocketInfo* CustomChannel::find(const Socket& ws)
 void CustomChannel::log(const Message& msg)
 {
 	Application& app = Application::instance();
-	poco_information_f1(app.logger(), "CustomChannel::log Message :%s", msg.getText());
+	poco_debug_f1(app.logger(), "CustomChannel::log Message :%s", msg.getText());
 
 	FastMutex::ScopedLock lock(_socketMutex);
 
@@ -84,13 +84,13 @@ void CustomChannel::log(const Message& msg)
 		try
 		{
 			WebSocket& ws = reinterpret_cast<WebSocket&>((*it)->ws);
-			poco_information_f2(app.logger(), "CustomChannel::log WebSocket Info socket:%s peer:%s",
+			poco_debug_f2(app.logger(), "CustomChannel::log WebSocket Info socket:%s peer:%s",
 				ws.address().toString(), ws.peerAddress().toString());
 			ws.sendFrame(text.data(), text.length(), (*it)->flag);
 		}
 		catch (Poco::Net::NetException& exc)
 		{
-			poco_information_f1(app.logger(), "CustomChannel::log :%s", exc.displayText());
+			poco_debug_f1(app.logger(), "CustomChannel::log :%s", exc.displayText());
 		}
 		/// Bug
 		/// Poco::Net::ConnectionAbortedException unhandler

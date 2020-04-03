@@ -15,7 +15,7 @@ WSQTTServiceHandler::WSQTTServiceHandler(StreamSocket& socket, SocketReactor& re
 	_reactor(reactor)
 {
 	Application& app = Application::instance();
-	poco_information_f1(app.logger(), "WebSocket connection established. reactor thread %lu", Thread::currentTid());
+	poco_debug_f1(app.logger(), "WebSocket connection established. reactor thread %lu", Thread::currentTid());
 	poco_debug_f1(app.logger(), "KeepAliveStatus:%b", _socket.getKeepAlive());
 	poco_debug_f1(app.logger(), "peerAddress:%s", _socket.peerAddress().toString());
 
@@ -36,7 +36,7 @@ WSQTTServiceHandler::~WSQTTServiceHandler()
 	_reactor.removeEventHandler(_socket, Observer<WSQTTServiceHandler, TimeoutNotification>(*this, &WSQTTServiceHandler::onTimeout));
 	_reactor.removeEventHandler(_socket, Observer<WSQTTServiceHandler, ShutdownNotification>(*this, &WSQTTServiceHandler::onShutdown));
 	poco_debug_f1(app.logger(), "peerAddress:%s", _socket.peerAddress().toString());
-	poco_information_f1(app.logger(), "WebSocket connection closed. reactor thread %lu", Thread::currentTid());
+	poco_debug_f1(app.logger(), "WebSocket connection closed. reactor thread %lu", Thread::currentTid());
 }
 
 void WSQTTServiceHandler::onReadable(ReadableNotification* pNf)

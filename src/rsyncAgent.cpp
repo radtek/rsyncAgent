@@ -94,7 +94,7 @@ int rsyncAgent::main(const ArgVec& args)
 		ServerSocket svs(port);
 		HTTPServer srv(new RequestHandlerFactory, svs, new HTTPServerParams);
 		srv.start();
-		poco_information_f1(Application::instance().logger(), "HTTPServer Listen from %s", svs.address().toString());
+		poco_debug_f1(Application::instance().logger(), "HTTPServer Listen from %s", svs.address().toString());
 		
 		if ("websocket" == app.config().getString("config.etype", "mqtt"))
 		{

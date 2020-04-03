@@ -48,7 +48,7 @@ MQTTAsyncClient::MQTTAsyncClient(bool useSSL)
 		throw Poco::Exception("MQTTAsync_setCallbacks");
 	}
 
-	poco_information(Application::instance().logger(),"MQTTAsyncClient start");
+	poco_debug(Application::instance().logger(),"MQTTAsyncClient start");
 }
 
 MQTTAsyncClient::~MQTTAsyncClient()
@@ -99,14 +99,14 @@ void MQTTAsyncClient::connectOpts()
 
 void MQTTAsyncClient::deliveryComplete(void* context, token token)
 {
-	poco_information(Application::instance().logger(),format("send message %d success\n", token));
+	poco_debug(Application::instance().logger(),format("send message %d success\n", token));
 }
 
 int MQTTAsyncClient::messageArrived(void* context, char* topicName, int topicLen, message* msg)
 {
 	std::string topic(topicName, topicLen);
 	std::string message((char*)msg->payload, msg->payloadlen);
-	poco_information(Application::instance().logger(),format("recv message from: %s, body is %s", topic, message));
+	poco_debug(Application::instance().logger(),format("recv message from: %s, body is %s", topic, message));
 	
 	JSON_PARSE(message);
 
@@ -124,20 +124,20 @@ int MQTTAsyncClient::messageArrived(void* context, char* topicName, int topicLen
 void MQTTAsyncClient::connectionLost(void* context, char* cause)
 {
 	connected = false;
-	poco_information(Application::instance().logger(),"connect lost \n");
+	poco_debug(Application::instance().logger(),"connect lost \n");
 }
 
 void MQTTAsyncClient::onSuccess(void* context, successData* response)
 {
 	connected = true;
-	poco_information(Application::instance().logger(),"connect success \n");
+	poco_debug(Application::instance().logger(),"connect success \n");
 }
 
 void MQTTAsyncClient::onFailure(void* context, failureData* response)
 {
 	connected = false;
 
-	poco_information(Application::instance().logger(),format("connect failed, rc %d, message:%s\n",
+	poco_debug(Application::instance().logger(),format("connect failed, rc %d, message:%s\n",
 		response ? response->code : -1,
 		response->message));
 }
@@ -150,7 +150,7 @@ void MQTTAsyncClient::connect(const char* user, const char* password, bool useSS
 
 	int rc = 0;
 	if ((rc = MQTTAsync_connect(client, &conn_opts)) != MQTTASYNC_SUCCESS) {
-		poco_information(Application::instance().logger(),format("MQTT Failed to start connect, return code %d\n", rc));
+		poco_debug(Application::instance().logger(),format("MQTT Failed to start connect, return code %d\n", rc));
 		throw Poco::Exception("MQTT Failed to start connect, return code %d\n");
 	}
 }
@@ -180,7 +180,7 @@ void MQTTAsyncClient::disconnect()
 
 	int rc = 0;
 	if ((rc = MQTTAsync_disconnect(client, &disc_opts)) != MQTTASYNC_SUCCESS) {
-		poco_information(Application::instance().logger(),format("MQTT Failed to disconnect, return code %d\n", rc));
+		poco_debug(Application::instance().logger(),format("MQTT Failed to disconnect, return code %d\n", rc));
 	}
 }
 
