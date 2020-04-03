@@ -9,6 +9,10 @@
 #include "Poco/LoggingRegistry.h"
 #include "Poco/String.h"
 #include "CustomChannel.h"
+#include "Poco/Net/SocketAcceptor.h"
+#include "Poco/Net/SocketReactor.h"
+#include "Poco/Net/WebSocket.h"
+#include "WSQTTServiceHandler.h"
 
 namespace Reach {
 	
@@ -20,58 +24,27 @@ namespace Reach {
 	using Poco::Net::HTTPServerResponse;
 	using Poco::Util::Application;
 	using Poco::LoggingRegistry;
+	using Poco::Net::SocketAcceptor;
+	using Poco::Net::SocketReactor;
 
 	class WebSocketRequestHandler : public HTTPRequestHandler
 		/// Handle a WebSocket connection.
 	{
 	public:
-		WebSocketRequestHandler()
-		{
-			LoggingRegistry& reg = LoggingRegistry::defaultRegistry();
-			CustomChannel* pCustomChannel = dynamic_cast<CustomChannel*>(reg.channelForName("CustomChannel"));
-			assert(pCustomChannel != 0);
-		}
 		void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response)
-		{
+		{	
 			Application& app = Application::instance();
 			try
 			{
 				WebSocket ws(request, response);
-				ws.setKeepAlive(true);
-				app.logger().information("KeepAliveStatus:%b", ws.getKeepAlive());
-				app.logger().information("WebSocket connection established.");
-				char buffer[1024] = {0};
-				int flags;
-				int n;
-				do
-				{
-					n = ws.receiveFrame(buffer, sizeof(buffer), flags);
-					if (Poco::icompare(std::string(buffer,n), "registerMqttService") == 0)
-					{
-						poco_information(app.logger(), "registerMqttService addSocket");
-						LoggingRegistry& reg = LoggingRegistry::defaultRegistry();
-						CustomChannel* pCustomChannel = dynamic_cast<CustomChannel*>(reg.channelForName("CustomChannel"));
-						assert(pCustomChannel != 0);
-						pCustomChannel->addSocket(ws);
-					}
-
-					if (Poco::icompare(std::string(buffer, n), "unregisterMqttService") == 0)
-					{
-						poco_information(app.logger(), "unregisterMqttService addSocket");
-						LoggingRegistry& reg = LoggingRegistry::defaultRegistry();
-						CustomChannel* pCustomChannel = dynamic_cast<CustomChannel*>(reg.channelForName("CustomChannel"));
-						assert(pCustomChannel != 0);
-						pCustomChannel->removeSocket(ws);
-					}
-	
-					app.logger().information(Poco::format("Frame received (length=%d, flags=0x%x).", n, unsigned(flags)));
-					ws.sendFrame(buffer, n, flags);
-				} while (n > 0 && (flags & WebSocket::FRAME_OP_BITMASK) != WebSocket::FRAME_OP_CLOSE);
-				app.logger().information("WebSocket connection closed.");
+				SocketReactor reactor;
+				WSQTTServiceHandler* wsh = new WSQTTServiceHandler(ws, reactor);
+				reactor.run();
 			}
 			catch (WebSocketException& exc)
 			{
 				app.logger().log(exc);
+				poco_debug_f1(app.logger(), "Rasied WebSocketException! ,details : %s", exc.displayText());
 				switch (exc.code())
 				{
 				case WebSocket::WS_ERR_HANDSHAKE_UNSUPPORTED_VERSION:
@@ -85,6 +58,11 @@ namespace Reach {
 					response.send();
 					break;
 				}
+			}
+			catch (Poco::Exception& exc)
+			{
+				app.logger().log(exc);
+				poco_debug_f1(app.logger(),"Rasied Exception! ,details : %s", exc.displayText());
 			}
 		}
 	};
