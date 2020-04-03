@@ -9,6 +9,7 @@
 #include "Poco/TextConverter.h"
 #include "Poco/UnicodeConverter.h"
 #include "Poco/UTF16Encoding.h"
+#include "Poco/Stopwatch.h"
 
 namespace Reach {
 
@@ -20,6 +21,7 @@ namespace Reach {
 	using Poco::UTF16Encoding;
 	using Poco::TextConverter;
 	using Poco::UnicodeConverter;
+	using Poco::Stopwatch;
 	///RS_GreateQRCode
 	class GreateQRCode : public Command
 	{
@@ -27,24 +29,25 @@ namespace Reach {
 		GreateQRCode(const std::string& text, const std::string& path)
 			:_text(text), _path(path)
 		{
+			sw.reset();
 		}
 
 		void run()
 		{
+			sw.start();
 			Application& app = Application::instance();
 			/// const char *text = "Hello, world!";              // User-supplied text
 			const QrCode::Ecc errCorLvl = QrCode::Ecc::MEDIUM;  // Error correction level
 
 			// Make and print the QR Code symbol
 			const QrCode qr = QrCode::encodeText(_text.data(), errCorLvl);
-			printQr(qr);
-			poco_information_f2(app.logger(), "version : %d, mask : %d", qr.getVersion(), qr.getMask());
-
-			/*FileOutputStream ofs(_path);
-			ofs << qr.toSvgString(0) << std::endl;
-			ofs.close();*/
+			//printQr(qr);
+			poco_debug_f2(app.logger(), "version : %d, mask : %d", qr.getVersion(), qr.getMask());
 
 			saveBmp(qr, 0, 8);
+
+			sw.stop();
+			poco_debug_f1(app.logger(), "GreateQRCode : %?d millisecond", sw.elapsed() / 1000);
 		}
 
 		void printQr(const QrCode &qr) {
@@ -106,36 +109,34 @@ namespace Reach {
 			kInfoHeader.biClrUsed = 0;
 			kInfoHeader.biClrImportant = 0;
 
-			Poco::Buffer<char> data(0);
+			std::vector<char> data(unDataBytes, 0);
 
 			int x ,y;
-			for (int h = 0; h < unHeight; h++) {
-				for (int w = 0; w < iLineByteCnt; w++) {
+			for (int h = 0; h <= unHeight; h++) {
+				for (int w = 0; w <= iLineByteCnt; w++) {
 					//x = round(double(1 / scale * w));
 					//y = round(double(1 / scale * h));
 					x = round(double(1 / scale * (w - border)));
 					y = round(double(1 / scale * (h - border)));
 					char cpixle = (qr.getModule(x, y) ? 0x00 : 0xFF);
 					int pos = (h * iLineByteCnt + w) * 3;
-					data.append(cpixle);
-					data.append(cpixle);
-					data.append(cpixle);
+					data[pos] = cpixle;
+					data[pos + 1] = cpixle;
+					data[pos + 2] = cpixle;
 				}
-				std::cout << std::endl;
 			}
-			std::cout << std::endl;
-			
 
 			FileOutputStream ofs(_path);
 			ofs.write((char*)&kFileHeader, sizeof(kFileHeader));
 			ofs.write((char*)&kInfoHeader, sizeof(kInfoHeader));
-			ofs.write((char*)data.begin(), data.size());
+			ofs.write((char*)data.data(), data.size());
 			ofs.close();
 		}
 
 	private:
 		std::string _text;
 		std::string _path;
+		Stopwatch sw;
 	};
 
 	class GreateQRCodeRequestHandler : public RESTfulRequestHandler
@@ -143,7 +144,7 @@ namespace Reach {
 	public:
 		void handleRequest(HTTPServerRequest& request, HTTPServerResponse& response)
 		{
-			poco_information_f1(Application::instance().logger(), "Request from %s", request.clientAddress().toString());
+			poco_trace_f1(Application::instance().logger(), "Request from %s", request.clientAddress().toString());
 			RESTfulRequestHandler::handleCORS(request, response);
 
 			HTMLForm form(request, request.stream());
