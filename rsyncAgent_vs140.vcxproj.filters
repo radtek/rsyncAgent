@@ -311,9 +311,6 @@
     <ClInclude Include="src\mqtt\MQTTAsyncClient.h">
       <Filter>Core\mqtt</Filter>
     </ClInclude>
-    <ClInclude Include="src\mqtt\MQTTNotification.h">
-      <Filter>Core\mqtt</Filter>
-    </ClInclude>
     <ClInclude Include="src\Utility.h">
       <Filter>Core\Header Files</Filter>
     </ClInclude>
@@ -325,9 +322,6 @@
     </ClInclude>
     <ClInclude Include="src\routes\CloudAPI\EncryptDataBase64RequestHandler.h">
       <Filter>RequestHandler\Clould\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\mqtt\MQTTAsyncChannel.h">
-      <Filter>Core\mqtt</Filter>
     </ClInclude>
     <ClInclude Include="src\CustomChannel.h">
       <Filter>Core</Filter>
@@ -349,6 +343,9 @@
     </ClInclude>
     <ClInclude Include="src\mqtt\WSQTTHandler.h">
       <Filter>Core\mqtt</Filter>
+    </ClInclude>
+    <ClInclude Include="src\WSQTTServiceHandler.h">
+      <Filter>Core\Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -448,17 +445,11 @@
     <ClCompile Include="src\mqtt\MQTTAsyncClient.cpp">
       <Filter>Core\mqtt</Filter>
     </ClCompile>
-    <ClCompile Include="src\mqtt\MQTTNotification.cpp">
-      <Filter>Core\mqtt</Filter>
-    </ClCompile>
     <ClCompile Include="src\Utility.cpp">
       <Filter>Core\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\TokenManager.cpp">
       <Filter>Core\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\mqtt\MQTTAsyncChannel.cpp">
-      <Filter>Core\mqtt</Filter>
     </ClCompile>
     <ClCompile Include="src\CustomChannel.cpp">
       <Filter>Core</Filter>
@@ -486,6 +477,9 @@
     </ClCompile>
     <ClCompile Include="src\mqtt\WSQTTHandler.cpp">
       <Filter>Core\mqtt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\WSQTTServiceHandler.cpp">
+      <Filter>Core\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -56,9 +56,7 @@
     <ClInclude Include="src\CustomChannel.h" />
     <ClInclude Include="src\GMCrypto.h" />
     <ClInclude Include="src\mqtt\CloudEventRecevier.h" />
-    <ClInclude Include="src\mqtt\MQTTAsyncChannel.h" />
     <ClInclude Include="src\mqtt\MQTTAsyncClient.h" />
-    <ClInclude Include="src\mqtt\MQTTNotification.h" />
     <ClInclude Include="src\mqtt\WSQTTHandler.h" />
     <ClInclude Include="src\qrcode\BitBuffer.hpp" />
     <ClInclude Include="src\qrcode\QrCode.hpp" />
@@ -126,14 +124,13 @@
     <ClInclude Include="src\rsyncAgent.h" />
     <ClInclude Include="src\TokenManager.h" />
     <ClInclude Include="src\Utility.h" />
+    <ClInclude Include="src\WSQTTServiceHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AdaptiveRecevier.cpp" />
     <ClCompile Include="src\CustomChannel.cpp" />
     <ClCompile Include="src\mqtt\CloudEventRecevier.cpp" />
-    <ClCompile Include="src\mqtt\MQTTAsyncChannel.cpp" />
     <ClCompile Include="src\mqtt\MQTTAsyncClient.cpp" />
-    <ClCompile Include="src\mqtt\MQTTNotification.cpp" />
     <ClCompile Include="src\mqtt\WSQTTHandler.cpp" />
     <ClCompile Include="src\qrcode\BitBuffer.cpp" />
     <ClCompile Include="src\qrcode\QrCode.cpp" />
@@ -173,6 +170,7 @@
     <ClCompile Include="src\rsyncAgent.cpp" />
     <ClCompile Include="src\TokenManager.cpp" />
     <ClCompile Include="src\Utility.cpp" />
+    <ClCompile Include="src\WSQTTServiceHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="rsyncAgent.rc" />
