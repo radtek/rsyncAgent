@@ -48,6 +48,7 @@ namespace Reach {
 			seal.set("keySn", extract("body", "keySn"));
 			seal.set("signSn", extract("body", "signSn"));
 			seal.set("certBase64", extract("body", "certBase64"));
+			seal.set("encCertBase64", extract("body", "encCertBase64"));
 			data.add(seal);
 
 			Object result;
