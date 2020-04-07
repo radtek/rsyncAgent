@@ -19,6 +19,7 @@ namespace Reach {
 		void onReadable(ReadableNotification* pNf);
 		void onWritable(WritableNotification* pNf);
 		void onShutdown(ShutdownNotification * pNf);
+		void onError(ErrorNotification * pNf);
 	private:
 		WebSocket			_socket;
 		SocketReactor&		_reactor;

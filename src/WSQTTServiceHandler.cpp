@@ -21,6 +21,7 @@ WSQTTServiceHandler::WSQTTServiceHandler(StreamSocket& socket, SocketReactor& re
 
 	_reactor.addEventHandler(_socket, Observer<WSQTTServiceHandler, ReadableNotification>(*this, &WSQTTServiceHandler::onReadable));
 	_reactor.addEventHandler(_socket, Observer<WSQTTServiceHandler, WritableNotification>(*this, &WSQTTServiceHandler::onWritable));
+	_reactor.addEventHandler(_socket, Observer<WSQTTServiceHandler, ErrorNotification>(*this, &WSQTTServiceHandler::onError));
 	_reactor.addEventHandler(_socket, Observer<WSQTTServiceHandler, ShutdownNotification>(*this, &WSQTTServiceHandler::onShutdown));
 }
 
@@ -30,6 +31,7 @@ WSQTTServiceHandler::~WSQTTServiceHandler()
 
 	_reactor.removeEventHandler(_socket, Observer<WSQTTServiceHandler, ReadableNotification>(*this, &WSQTTServiceHandler::onReadable));
 	_reactor.removeEventHandler(_socket, Observer<WSQTTServiceHandler, WritableNotification>(*this, &WSQTTServiceHandler::onWritable));
+	_reactor.removeEventHandler(_socket, Observer<WSQTTServiceHandler, ErrorNotification>(*this, &WSQTTServiceHandler::onError));
 	_reactor.removeEventHandler(_socket, Observer<WSQTTServiceHandler, ShutdownNotification>(*this, &WSQTTServiceHandler::onShutdown));
 	poco_debug_f1(app.logger(), "peerAddress:%s", _socket.peerAddress().toString());
 	poco_debug_f1(app.logger(), "WebSocket connection closed. reactor thread %lu", Thread::currentTid());
@@ -44,16 +46,25 @@ void WSQTTServiceHandler::onReadable(ReadableNotification* pNf)
 	int flags, n = 0;
 	char buffer[1024] = { 0 };
 	std::string mag;
-	n = _socket.receiveFrame(buffer, sizeof(buffer), flags);
-	mag.assign(buffer, n);
-	poco_debug_f3(app.logger(), "Frame received (mag=%s, length=%d, flags=0x%x).", mag, n, unsigned(flags));
-	if (n > 0) {
-		n = _socket.sendFrame(mag.data(), mag.size(), flags);
-		poco_debug_f3(app.logger(), "Frame send (mag=%s, length=%d, flags=0x%x).", mag, n, unsigned(flags));
-	}
-	else
+
+	try
 	{
-		poco_debug(app.logger(), "receive empty Bytes!");
+		n = _socket.receiveFrame(buffer, sizeof(buffer), flags);
+		mag.assign(buffer, n);
+		poco_debug_f3(app.logger(), "Frame received (mag=%s, length=%d, flags=0x%x).", mag, n, unsigned(flags));
+		if (n > 0) {
+			n = _socket.sendFrame(mag.data(), mag.size(), flags);
+			poco_debug_f3(app.logger(), "Frame send (mag=%s, length=%d, flags=0x%x).", mag, n, unsigned(flags));
+		}
+		else
+		{
+			poco_debug(app.logger(), "receive empty Bytes!");
+			_reactor.stop();
+		}
+	}
+	catch (Poco::Exception& exc)
+	{
+		app.logger().log(exc);
 		_reactor.stop();
 	}
 }
@@ -79,9 +90,19 @@ void WSQTTServiceHandler::onWritable(WritableNotification* pNf)
 	}
 }
 
+void WSQTTServiceHandler::onError(ErrorNotification * pNf)
+{
+	pNf->release();
+	Application& app = Application::instance();
+	poco_debug(app.logger(), "onError");
+	delete this;
+}
+
 void WSQTTServiceHandler::onShutdown(ShutdownNotification* pNf)
 {
 	pNf->release();
+	Application& app = Application::instance();
+	poco_debug(app.logger(),"onShutdown");
 	delete this;
 }
 
