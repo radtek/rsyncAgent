@@ -123,6 +123,9 @@
     <None Include="..\bin\config\CloudGetAuthCode.json">
       <Filter>RequestHandler\Clould\config</Filter>
     </None>
+    <None Include="rsyncAgent_gtjd.properties">
+      <Filter>Configuration Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\rsyncAgent.h">
