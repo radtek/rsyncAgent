@@ -37,7 +37,7 @@ namespace Reach {
 			sw.start();
 			Application& app = Application::instance();
 			/// const char *text = "Hello, world!";              // User-supplied text
-			const QrCode::Ecc errCorLvl = QrCode::Ecc::MEDIUM;  // Error correction level
+			const QrCode::Ecc errCorLvl = QrCode::Ecc::HIGH;  // Error correction level
 
 			// Make and print the QR Code symbol
 			const QrCode qr = QrCode::encodeText(_text.data(), errCorLvl);
