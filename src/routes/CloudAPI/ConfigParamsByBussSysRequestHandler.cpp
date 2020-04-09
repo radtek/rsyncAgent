@@ -27,7 +27,9 @@ void ConfigParamsByBussSys::run()
 			std::stoi(extract("head", "code"), 0, 16));
 
 	Application& app = Application::instance();
-	app.config().setString("authCode", extract("body","authCode"));
+	std::string code = extract("body", "authCode");
+	app.config().setString("authCode", code);
+	Utility::writeRegistry("authCode", code);
 }
 
 void ConfigParamsByBussSys::mixValue()

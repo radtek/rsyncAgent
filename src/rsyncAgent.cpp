@@ -82,6 +82,25 @@ void rsyncAgent::displayHelp()
 	helpFormatter.format(std::cout);
 }
 
+#include "Poco/Util/WinRegistryKey.h"
+#include <string>
+void rsyncAgent::restoreProperties()
+{
+	Application& app = Application::instance();
+	WinRegistryKey regkey("HKEY_CURRENT_USER\\Software\\Reach", true);
+
+	try
+	{
+		std::string code = regkey.getString("authCode");
+		app.config().setString("authCode", code);
+		poco_information_f1(app.logger(), "\\Software\\Reach authCode : %s",code);
+	}
+	catch (Poco::NotFoundException& exc)
+	{
+		app.logger().log(exc);
+	}
+}
+
 int rsyncAgent::main(const ArgVec& args)
 {
 	Application& app = Application::instance();
@@ -90,6 +109,7 @@ int rsyncAgent::main(const ArgVec& args)
 	{
 		TaskManager tm;
 		tm.start(new AdaptiveRecevier);
+		restoreProperties();
 		unsigned short port = (unsigned short)config().getInt("HTTPFormServer.port", 9980);
 		ServerSocket svs(port);
 		HTTPServer srv(new RequestHandlerFactory, svs, new HTTPServerParams);

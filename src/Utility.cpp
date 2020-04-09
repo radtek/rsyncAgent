@@ -578,3 +578,22 @@ std::string Utility::getOpenSSLError()
 	BIO_free(bio);
 	return ret;
 }
+
+#include "Poco/Util/WinRegistryKey.h"
+using Poco::Util::WinRegistryKey;
+
+void Utility::writeRegistry(const std::string& name, const std::string& value)
+{
+	Application& app = Application::instance();
+	WinRegistryKey regkey("HKEY_CURRENT_USER\\Software\\Reach");
+
+	try
+	{
+		regkey.setString(name, value);
+		poco_information_f2(app.logger(), "writeRegistry %s:%s", name, value);
+	}
+	catch (Poco::Exception& exc)
+	{
+		app.logger().log(exc);
+	}
+}

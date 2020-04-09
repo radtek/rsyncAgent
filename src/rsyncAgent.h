@@ -34,6 +34,7 @@ namespace Reach {
 		void displayHelp();
 		void printProperties();
 		void printProperties(const std::string& base);
+		void restoreProperties();
 
 		int main(const ArgVec& args);
 

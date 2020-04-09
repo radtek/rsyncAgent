@@ -9,6 +9,7 @@
 #include "../../iWebAssist.h"
 #include <cassert>
 #include <comutil.h>
+#include "../src/Utility.h"
 
 using namespace Reach;
 //using Poco::AutoPtr;
@@ -29,6 +30,7 @@ void ConfigParameters::run()
 	app.config().setString(_cmd, _val);
 	if (_cmd == "authCode") {
 		writeKCode();
+		Utility::writeRegistry(_cmd, _val);
 	}
 	else if (_cmd == "bussName") {
 		writeAuthCode(_cmd, _val);

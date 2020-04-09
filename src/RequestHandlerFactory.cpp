@@ -72,7 +72,7 @@ using Poco::Net::HTTPServerRequest;
 HTTPRequestHandler * Reach::RequestHandlerFactory::createRequestHandler(const HTTPServerRequest & request)
 {
 	Application& app = Application::instance();
-	app.logger().information("Request from "
+	poco_information(app.logger(),"Request from "
 		+ request.clientAddress().toString()
 		+ ": "
 		+ request.getMethod()
@@ -83,7 +83,7 @@ HTTPRequestHandler * Reach::RequestHandlerFactory::createRequestHandler(const HT
 
 	for (HTTPServerRequest::ConstIterator it = request.begin(); it != request.end(); ++it)
 	{
-		app.logger().information(it->first + ": " + it->second);
+		poco_information(app.logger(), it->first + ": " + it->second);
 	}
 
 	if (request.getURI() == "/echoBody")
