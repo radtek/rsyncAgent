@@ -37,14 +37,14 @@ namespace Reach {
 			sw.start();
 			Application& app = Application::instance();
 			/// const char *text = "Hello, world!";              // User-supplied text
-			const QrCode::Ecc errCorLvl = QrCode::Ecc::HIGH;  // Error correction level
+			const QrCode::Ecc errCorLvl = QrCode::Ecc::MEDIUM;  // Error correction level
 
 			// Make and print the QR Code symbol
 			const QrCode qr = QrCode::encodeText(_text.data(), errCorLvl);
 			//printQr(qr);
 			poco_debug_f2(app.logger(), "version : %d, mask : %d", qr.getVersion(), qr.getMask());
 
-			saveBmp(qr, 0, 8);
+			saveBmp(qr, app.config().getInt("qrcode.border", 2), app.config().getInt("qrcode.scale", 4));
 
 			sw.stop();
 			poco_debug_f1(app.logger(), "GreateQRCode : %?d millisecond", sw.elapsed() / 1000);
@@ -78,19 +78,19 @@ namespace Reach {
 
 			Application& app = Application::instance();
 
-			int	unWidth, unHeight, unDataBytes;
+			int	unWidth, unHeight, unDataBytes, biBit = 24;
 			//int border = 4; // do not support
 
 			unHeight = unWidth = (qr.getSize() + border * 2) * scale;
 
-			int iLineByteCnt = (((unWidth * 8) + 31) >> 5) << 2;
-			unDataBytes = iLineByteCnt * unHeight * 8;
+			int iLineByteCnt = ((unWidth  * biBit / 8) + 3) >> 2 << 2;//iLineByteCnt divide by 4
+			unDataBytes = unHeight * iLineByteCnt;
 
 			BITMAPFILEHEADER kFileHeader;
 			kFileHeader.bfType = 0x4d42;  // "BM"
 			kFileHeader.bfSize = sizeof(BITMAPFILEHEADER) +
 				sizeof(BITMAPINFOHEADER) +
-				unDataBytes / 8;
+				unDataBytes;
 			kFileHeader.bfReserved1 = 0;
 			kFileHeader.bfReserved2 = 0;
 			kFileHeader.bfOffBits = sizeof(BITMAPFILEHEADER) +
@@ -98,10 +98,10 @@ namespace Reach {
 
 			BITMAPINFOHEADER kInfoHeader;
 			kInfoHeader.biSize = sizeof(BITMAPINFOHEADER);
-			kInfoHeader.biWidth = iLineByteCnt;
+			kInfoHeader.biWidth = unWidth;
 			kInfoHeader.biHeight = -unHeight;
 			kInfoHeader.biPlanes = 1;
-			kInfoHeader.biBitCount = 24;
+			kInfoHeader.biBitCount = biBit;
 			kInfoHeader.biCompression = BI_RGB;
 			kInfoHeader.biSizeImage = 0;
 			kInfoHeader.biXPelsPerMeter = 0;
@@ -109,20 +109,23 @@ namespace Reach {
 			kInfoHeader.biClrUsed = 0;
 			kInfoHeader.biClrImportant = 0;
 
-			std::vector<char> data(unDataBytes, 0);
+			std::vector<char> data(unDataBytes, 0xFF);
 
-			int x ,y;
-			for (int h = 0; h <= unHeight; h++) {
-				for (int w = 0; w <= iLineByteCnt; w++) {
-					//x = round(double(1 / scale * w));
-					//y = round(double(1 / scale * h));
-					x = round(double(1 / scale * (w - border)));
-					y = round(double(1 / scale * (h - border)));
+			for (int y = -border; y < qr.getSize() + border; y++) {
+				for (int x = -border; x < qr.getSize() + border; x++) {
 					char cpixle = (qr.getModule(x, y) ? 0x00 : 0xFF);
-					int pos = (h * iLineByteCnt + w) * 3;
-					data[pos] = cpixle;
-					data[pos + 1] = cpixle;
-					data[pos + 2] = cpixle;
+					if (x < 0 || y < 0)
+						continue;
+					int X = (x + border) * scale;
+					int Y = (y + border) * scale;
+					for (int i = 0; i < scale; ++i) {
+						for (int j = 0; j < scale; ++j) {
+							int pos = (Y + i) * iLineByteCnt + (X + j) * 3;
+							data[pos] = cpixle;
+							data[pos + 1] = cpixle;
+							data[pos + 2] = cpixle;
+						}
+					}
 				}
 			}
 
